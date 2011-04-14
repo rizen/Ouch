@@ -5,7 +5,7 @@ use Carp qw(longmess shortmess);
 use parent 'Exporter';
 use overload bool => sub {1}, q{""} => 'scalar', fallback => 1;
 
-our @EXPORT = qw(ouch kiss);
+our @EXPORT = qw(bleep ouch kiss);
 
 sub new {
   my ($class, $code, $message, $data) = @_;
@@ -25,6 +25,23 @@ sub kiss {
     return 1;
   }
   return 0;
+}
+
+sub bleep {
+  my ($e) = @_;
+  $e ||= $@;
+  if (ref $e eq 'Ouch') {
+    return $e->message;
+  }
+  else {
+    my $message = $@;
+    if ($message =~ m{^(.*)\s+at\s.*line\s\d+.}xms) {
+        return $1;
+    }
+    else {
+        return $message;
+    }
+  }
 }
 
 sub scalar {
@@ -131,7 +148,7 @@ You can also go long form if you prefer:
 
  die Ouch->new($code, $message, $data);
 
-=head2 Interface
+=head2 Functional Interface
 
 =head3 ouch
 
@@ -174,6 +191,28 @@ The code you're looking for.
 Optional. If you like you can pass the exception into C<kiss>. If not, it will just use whatever is in C<$@>. You might want to do this if you've saved the exception before running another C<eval>, for example.
 
 =back
+
+
+=head3 bleep 
+
+A little sugar to make exceptions human friendly. Returns a clean error message from any exception, including an Ouch.
+
+ File not found.
+
+Rather than:
+
+ File not found. at /Some/File.pm line 63.
+
+=over
+
+=item exception
+
+Optional. If you like you can pass the exception into C<bleep>. If not, it will just use whatever is in C<$@>.
+
+=back
+
+
+=head2 Object-Oriented Interface
 
 =head3 new
 
