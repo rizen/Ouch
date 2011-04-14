@@ -5,11 +5,19 @@ use Carp qw(longmess shortmess);
 use parent 'Exporter';
 use overload bool => sub {1}, q{""} => 'scalar', fallback => 1;
 
-our @EXPORT = qw(bleep ouch kiss);
+our @EXPORT = qw(bleep ouch kiss hug);
+our @EXPORT_OK = qw(try throw catch catch_all);
+our %EXPORT_TAGS = ( traditional => [qw( throw catch try catch_all )] );
 
 sub new {
   my ($class, $code, $message, $data) = @_;
   bless {code => $code, message => $message, data => $data, shortmess => shortmess($message), trace => longmess($message) }, $class;
+}
+
+sub try (&) {
+  my $try = shift;
+  eval { $try->() };
+  return $@;
 }
 
 sub ouch {
@@ -18,13 +26,31 @@ sub ouch {
   die $self;
 }
 
+sub throw {  # alias
+  ouch @_;
+}
+
 sub kiss {
   my ($code, $e) = @_;
   $e ||= $@;
-  if (ref $e eq 'Ouch' && $e->code == $code) {
+  if (ref $e eq 'Ouch' && $e->code eq $code) {
     return 1;
   }
   return 0;
+}
+
+sub catch {
+  kiss @_;
+}
+
+sub hug {
+  my ($e) = @_;
+  $e ||= $@;
+  return $@ ? 1 : 0;
+}
+
+sub catch_all {
+  hug @_;
 }
 
 sub bleep {
@@ -86,14 +112,14 @@ Ouch - Exceptions that don't hurt.
 
  use Ouch;
 
- eval { ouch 404, 'File not found.'; };
+ eval { ouch(404, 'File not found.'); };
 
  if (kiss 404) {
    check_elsewhere();
  }
 
  say $@;           # These two lines do the
- say $@->message;  # same thing.
+ say $@->scalar;   # same thing.
 
 =head1 DESCRIPTION
 
@@ -143,6 +169,7 @@ Most of the time, all you need to do is:
  ouch $code, $message, $data;
  ouch -32700, 'Parse error.', $request; # JSON-RPC 2.0 error
  ouch 441, 'You need to specify an email address.', 'email'; # form processing error
+ ouch 'missing_param', 'You need to specify an email address.', 'email';
 
 You can also go long form if you prefer:
 
@@ -160,7 +187,7 @@ Some nice sugar instead of using the object oriented interface.
 
 =item code
 
-An error code. An integer representing error type. Try to stick to codes used in whatever domain you happen to be working in. HTTP Status codes. JSON-RPC error codes, etc.
+An error code. An integer or string representing error type. Try to stick to codes used in whatever domain you happen to be working in. HTTP Status codes. JSON-RPC error codes, etc.
 
 =item message
 
@@ -168,7 +195,9 @@ A human readable error message.
 
 =item data
 
-Optional. Anything you want to attach to the exception to help a developer catching it decide what to do. For example, if you're doing form processing, you might want this to be the name of the field that caused the exception.
+Optional. Anything you want to attach to the exception to help a developer catching it decide what to do. For example, if you're doing form processing, you might want this to be the name of the field that caused the exception. 
+
+B<WARNING:> Do not include objects or code refs in your data. This should only be stuff that is easily serializable like scalars, array refs, and hash refs.
 
 =back
 
@@ -189,6 +218,23 @@ The code you're looking for.
 =item exception
 
 Optional. If you like you can pass the exception into C<kiss>. If not, it will just use whatever is in C<$@>. You might want to do this if you've saved the exception before running another C<eval>, for example.
+
+=back
+
+
+=head3 hug
+
+Some nice sugar to trap any exception.
+
+ if (hug) {
+   # make it stop
+ }
+
+=over 
+
+=item exception
+
+Optional. If you like you can pass the exception into C<hug>. If not, it will just use whatever is in C<$@>.
 
 =back
 
@@ -259,6 +305,54 @@ Returns the C<messsage> passed into the constructor.
 =head3 data
 
 Returns the C<data> passed into the constructor.
+
+=head2 Traditional Interface
+
+Some people just can't bring themselves to use the sugary cuteness of Ouch. For them there is the traditional interface. Here's how it works:
+
+ use Ouch qw(:traditional);
+
+ my $e = try {
+   throw 404, 'File not found.';
+ };
+
+ if ( catch 404, $e ) {
+   # do the big thing
+ }
+ elsif ( catch_all $e ) {
+   # make it stop
+ }
+ else {
+   # make it go
+ }
+
+B<NOTE:> C<try> also populates C<$@>, and C<catch> and C<catch_all> will also use C<$@> if you don't specify an exception.
+
+=head3 try
+
+Returns an exception. Is basically just a nice wrapper around C<eval>.
+
+=over
+
+=item block
+
+Try accepts a code ref, anonymous subroutine, or a block. 
+
+B<NOTE:> You need a semi-colon at the end of a C<try> block.
+
+=back
+
+=head3 throw
+
+Works exactly like C<ouch>. See C<ouch> for details.
+
+=head3 catch
+
+Works exactly like C<kiss>. See C<kiss> for details.
+
+=head3 catch_all
+
+Works exactly like C<hug>. See C<hug> for details.
 
 =head1 SUPPORT
 
