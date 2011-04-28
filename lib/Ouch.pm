@@ -5,7 +5,7 @@ use Carp qw(longmess shortmess);
 use parent 'Exporter';
 use overload bool => sub {1}, q{""} => 'scalar', fallback => 1;
 
-our @EXPORT = qw(bleep ouch kiss hug);
+our @EXPORT = qw(bleep ouch kiss hug barf);
 our @EXPORT_OK = qw(try throw catch catch_all);
 our %EXPORT_TAGS = ( traditional => [qw( throw catch try catch_all )] );
 
@@ -68,6 +68,21 @@ sub bleep {
         return $message;
     }
   }
+}
+
+sub barf {
+    my ($e) = @_;
+    my $code;
+    $e ||= $@;
+    if (ref $e eq 'Ouch') {
+        $code = $e->code;
+    } 
+    else {
+        $code = 1;
+    }
+
+    print STDERR bleep($e)."\n";
+    exit $code;
 }
 
 sub scalar {
@@ -254,6 +269,18 @@ Rather than:
 =item exception
 
 Optional. If you like you can pass the exception into C<bleep>. If not, it will just use whatever is in C<$@>.
+
+=back
+
+=head3
+
+Calls C<bleep>, and then exits with error code
+
+=over
+
+=item exception
+
+Optional. You can pass an exception into C<barf> which then gets passed to C<bleep> otherwise it will use whatever's in C<$@>
 
 =back
 
