@@ -1,4 +1,5 @@
-use Test::More tests => 23;
+use Test::More tests => 27;
+use Test::Trap;
 use lib '../lib';
 
 use_ok 'Ouch';
@@ -45,3 +46,12 @@ eval { ouch('missing_param', 'Email'); };
 is kiss('missing_param'), 1, 'kiss works on strings';
 is kiss('foo'), 0, 'kiss gives no false positives';
 
+# barf
+trap {eval { ouch(100, 'oops') } or barf() };
+is $trap->exit, 100, 'exit code';
+is $trap->stderr, "oops\n", 'stderr err message';
+
+# more barf
+trap { eval { die 'error' } or barf() };
+is $trap->exit, 1, 'default barf exit code';
+is $trap->stderr, "error\n", 'stderr err message w/o ouch';
