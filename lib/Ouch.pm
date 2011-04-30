@@ -6,8 +6,8 @@ use parent 'Exporter';
 use overload bool => sub {1}, q{""} => 'scalar', fallback => 1;
 
 our @EXPORT = qw(bleep ouch kiss hug barf);
-our @EXPORT_OK = qw(try throw catch catch_all);
-our %EXPORT_TAGS = ( traditional => [qw( throw catch try catch_all )] );
+our @EXPORT_OK = qw(try throw catch catch_all caught caught_all);
+our %EXPORT_TAGS = ( traditional => [qw(try throw catch catch_all)], trytiny => [qw( throw caught caught_all )] );
 
 sub new {
   my ($class, $code, $message, $data) = @_;
@@ -43,6 +43,10 @@ sub catch {
   kiss @_;
 }
 
+sub caught {
+  kiss @_;
+}
+
 sub hug {
   my ($e) = @_;
   $e ||= $@;
@@ -50,6 +54,10 @@ sub hug {
 }
 
 sub catch_all {
+  hug @_;
+}
+
+sub caught_all {
   hug @_;
 }
 
@@ -335,7 +343,7 @@ Returns the C<data> passed into the constructor.
 
 =head2 Traditional Interface
 
-Some people just can't bring themselves to use the sugary cuteness of Ouch. For them there is the traditional interface. Here's how it works:
+Some people just can't bring themselves to use the sugary cuteness of Ouch. For them there is the C<:traditional> interface. Here's how it works:
 
  use Ouch qw(:traditional);
 
@@ -380,6 +388,26 @@ Works exactly like C<kiss>. See C<kiss> for details.
 =head3 catch_all
 
 Works exactly like C<hug>. See C<hug> for details.
+
+=head2 Try::Tiny
+
+Many Ouch users, like to use Ouch with L<Try::Tiny>, and some of them are sticks in the mud who can't bring themselves to C<ouch> and C<kiss>, and don't like that C<:traditional> walks all over C<try> and C<catch> For them, there is the C<:trytiny> interface. Here's how it works:
+
+ use Try::Tiny;
+ use Ouch qw(:trytiny);
+
+ try {
+    throw(404, 'File not found!';
+ }
+ catch {
+    if (caught($_)) {
+        # do something
+    }
+    else {
+        throw($_); # rethrow
+    }
+ };
+
 
 =head1 SUPPORT
 
