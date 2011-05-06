@@ -280,7 +280,7 @@ Optional. If you like you can pass the exception into C<bleep>. If not, it will 
 
 =back
 
-=head3
+=head3 barf
 
 Calls C<bleep>, and then exits with error code
 
