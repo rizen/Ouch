@@ -198,6 +198,11 @@ You can also go long form if you prefer:
 
  die Ouch->new($code, $message, $data);
 
+If you want to rethrow an Ouch, you can simply C<die> it.
+
+ eval { ouch(404, 'File not found.'); } ;
+ die $@;
+
 =head2 Functional Interface
 
 =head3 ouch
@@ -280,7 +285,7 @@ Optional. If you like you can pass the exception into C<bleep>. If not, it will 
 
 =back
 
-=head3
+=head3 barf
 
 Calls C<bleep>, and then exits with error code
 
@@ -341,6 +346,29 @@ Returns the C<messsage> passed into the constructor.
 
 Returns the C<data> passed into the constructor.
 
+=head2 Try::Tiny
+
+Many Ouch users, like to use Ouch with L<Try::Tiny>, and some of them are sticks in the mud who can't bring themselves to C<ouch> and C<kiss>, and don't like that C<:traditional> walks all over C<try> and C<catch> For them, there is the C<:trytiny> interface. Here's how it works:
+
+ use Try::Tiny;
+ use Ouch qw(:trytiny);
+
+ try {
+    throw(404, 'File not found!';
+ }
+ catch {
+    if (caught($_)) {
+        # do something
+    }
+    else {
+        die $_; # rethrow
+    }
+ };
+
+=head1 DEPRICATED
+
+This functionality is depreciated and will be removed in a future release. Use Try::Tiny instead.
+
 =head2 Traditional Interface
 
 Some people just can't bring themselves to use the sugary cuteness of Ouch. For them there is the C<:traditional> interface. Here's how it works:
@@ -389,24 +417,6 @@ Works exactly like C<kiss>. See C<kiss> for details.
 
 Works exactly like C<hug>. See C<hug> for details.
 
-=head2 Try::Tiny
-
-Many Ouch users, like to use Ouch with L<Try::Tiny>, and some of them are sticks in the mud who can't bring themselves to C<ouch> and C<kiss>, and don't like that C<:traditional> walks all over C<try> and C<catch> For them, there is the C<:trytiny> interface. Here's how it works:
-
- use Try::Tiny;
- use Ouch qw(:trytiny);
-
- try {
-    throw(404, 'File not found!';
- }
- catch {
-    if (caught($_)) {
-        # do something
-    }
-    else {
-        throw($_); # rethrow
-    }
- };
 
 
 =head1 SUPPORT

@@ -1,0 +1,25 @@
+0.0402 - June 18, 2013
+ - Fixed missing documentation for "barf".
+ - Depricated :traditional in favor of Try::Tiny.
+ - Documented rethrowing Ouches. 
+
+0.0401 - April 30, 2011
+ - beppu pointed out there was no $VERSION. Told Dist::Zilla to add that.
+
+0.0400 - April 30, 2011
+ - Merged barf() from William Orr.
+ - Added an export called ":trytiny" which exports throw(), caught(), and caught_all().
+
+0.0300 - April 14, 2011
+ - Added hug() as a catch all.
+
+ By popular demand: http://blogs.perl.org/users/jt_smith/2011/04/ouch---exceptions-that-dont-hurt.html#comments
+ - Codes can now be strings.
+ - Added an export called 'traditional' which gives you more traditional names like try(), catch(), throw(), and catch_all().
+
+0.0200 - April 14, 2011
+ - Added 'bleep'.
+
+0.0100 - April 13, 2011
+ - Initial public release.
+
