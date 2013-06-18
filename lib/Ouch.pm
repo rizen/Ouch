@@ -348,7 +348,24 @@ Returns the C<data> passed into the constructor.
 
 =head2 Try::Tiny
 
-Many Ouch users, like to use Ouch with L<Try::Tiny>, and some of them are sticks in the mud who can't bring themselves to C<ouch> and C<kiss>, and don't like that C<:traditional> walks all over C<try> and C<catch> For them, there is the C<:trytiny> interface. Here's how it works:
+Many Ouch users like to use Ouch with L<Try::Tiny>.
+
+ use Try::Tiny;
+ use Ouch;
+
+ try {
+    ouch 404, 'File not found!';
+ }
+ catch {
+    if (kiss(401, $_)) {
+        # do something
+    }
+    else {
+        die $_; # rethrow
+    }
+ };
+
+Some users are sticks in the mud who can't bring themselves to C<ouch> and C<kiss>. For them, there is the C<:trytiny> interface. Here's how it works:
 
  use Try::Tiny;
  use Ouch qw(:trytiny);
@@ -357,13 +374,25 @@ Many Ouch users, like to use Ouch with L<Try::Tiny>, and some of them are sticks
     throw(404, 'File not found!';
  }
  catch {
-    if (caught($_)) {
+    if (caught(401, $_)) {
         # do something
     }
     else {
         die $_; # rethrow
     }
  };
+
+=head3 throw
+
+See C<ouch> for details.
+
+=head3 caught
+
+See C<kiss> for details.
+
+=head3 caught_all
+
+See C<hug> for details.
 
 =head1 DEPRICATED
 
