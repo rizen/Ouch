@@ -394,9 +394,9 @@ See C<kiss> for details.
 
 See C<hug> for details.
 
-=head1 DEPRICATED
+=head1 DEPRECATED
 
-This functionality is depreciated and will be removed in a future release. Use Try::Tiny instead.
+This functionality is deprecated and will be removed in a future release. Use Try::Tiny instead.
 
 =head2 Traditional Interface
 
