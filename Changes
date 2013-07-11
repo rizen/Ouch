@@ -1,3 +1,6 @@
+0.0403 - July 11, 2013
+ - Fixed documentation misspellings. @richdouglasevans
+
 0.0402 - June 18, 2013
  - Fixed missing documentation for "barf".
  - Depricated :traditional in favor of Try::Tiny.
