@@ -1,3 +1,9 @@
+0.0405 - August 19, 2013
+ - worr submitted a patch fixing some a POD error
+
+0.0404 - August 19, 2013
+ - Made Ouch explicitly require Perl 5.12 due to use of "use overload" and "use parent".
+
 0.0403 - July 11, 2013
  - Fixed documentation misspellings. @richdouglasevans
 
