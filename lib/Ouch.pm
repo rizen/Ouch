@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package Ouch;
 use Carp qw(longmess shortmess);
+use 5.012;
 use parent 'Exporter';
 use overload bool => sub {1}, q{""} => 'scalar', fallback => 1;
 
@@ -445,6 +446,11 @@ Works exactly like C<kiss>. See C<kiss> for details.
 =head3 catch_all
 
 Works exactly like C<hug>. See C<hug> for details.
+
+
+=head1 REQUIREMENTS
+
+Requires Perl 5.12 or higher.
 
 
 
