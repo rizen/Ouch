@@ -2,7 +2,6 @@ use strict;
 use warnings;
 package Ouch;
 use Carp qw(longmess shortmess);
-use 5.012;
 use parent 'Exporter';
 use overload bool => sub {1}, q{""} => 'scalar', fallback => 1;
 
