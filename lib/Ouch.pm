@@ -4,6 +4,7 @@ package Ouch;
 use Carp qw(longmess shortmess);
 use parent 'Exporter';
 use overload bool => sub {1}, q{""} => 'scalar', fallback => 1;
+use Scalar::Util qw(blessed);
 
 our @EXPORT = qw(bleep ouch kiss hug barf);
 our @EXPORT_OK = qw(try throw catch catch_all caught caught_all);
@@ -33,7 +34,7 @@ sub throw {  # alias
 sub kiss {
   my ($code, $e) = @_;
   $e ||= $@;
-  if (ref $e eq 'Ouch' && $e->code eq $code) {
+  if (blessed $e && $e->isa('Ouch') && $e->code eq $code) {
     return 1;
   }
   return 0;
@@ -64,7 +65,7 @@ sub caught_all {
 sub bleep {
   my ($e) = @_;
   $e ||= $@;
-  if (ref $e eq 'Ouch') {
+  if (blessed $e && $e->isa('Ouch')) {
     return $e->message;
   }
   else {
@@ -82,7 +83,7 @@ sub barf {
     my ($e) = @_;
     my $code;
     $e ||= $@;
-    if (ref $e eq 'Ouch') {
+    if (blessed $e && $e->isa('Ouch')) {
         $code = $e->code;
     } 
     else {
