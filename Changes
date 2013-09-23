@@ -1,3 +1,6 @@
+0.0407 - September 23, 2013
+ - Catch subclasses of Ouch as well Thanks to Graham Knop.
+
 0.0406 - September 13, 2013
  - Ouch doesn't need 5.12 afterall. Just needed to include the correct prereqs for the pragmas. Thanks to MidLifeXis and Ether.
 
