@@ -1,5 +1,8 @@
 Revision history for Perl module Ouch 
 
+0.0408 2013-09-24
+ - Reformatted the Changes file according to the spec in CPAN::Changes::Spec. Thanks to sergeyromanov who is working on a quest to improve CPAN: http://questhub.io/realm/perl/quest/51f0337718ba7d3959000086
+
 0.0407 2013-09-23
  - Catch subclasses of Ouch as well Thanks to Graham Knop.
 
