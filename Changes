@@ -1,5 +1,8 @@
 Revision history for Perl module Ouch 
 
+0.0409 2016-10-19
+ - Fixed some bugs related to Travis. Thanks to Zshawn Syed.
+
 0.0409 2015-01-27
  - Added support for Travis. Thanks to Zshawn Syed.
 
