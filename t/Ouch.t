@@ -1,4 +1,4 @@
-use Test::More tests => 27;
+use Test::More tests => 33;
 use Test::Trap;
 use lib '../lib';
 
@@ -30,16 +30,28 @@ use Ouch qw(:traditional);
 my $e = try {
   throw 100, 'Yikes';
 };
+$@ = undef; # ensure we really get to use $e
 isa_ok $e, 'Ouch';
+is hug(), 0, 'hug on reset $@ passes';
+is hug($e), 1, 'hug on passed Ouch object works';
+is bleep($e), 'Yikes', 'bleep on passed ouch works';
+
 is catch(100, $e), 1, 'catch works';
 is catch(101, $e), 0, 'catch works when not trapped';
-is catch_all($e), 1, 'catch_all does the same as hug';
+is catch_all($e), hug($e), 'catch_all does the same as hug';
+
+# what if the exception is a plain old one
+$e = try { die 'Aaagh' };
+$@ = undef; # ensure we really get to use $e
+ok !ref($e), 'exception is not blessed when using die';
+is bleep($e), 'Aaagh', 'bleep on plain string works';
 
 # what if there is no exception
-
-eval { my $x = 1 };
-is hug(), 0, 'hug does not catch lack of exception';
-is catch_all($e), 0, 'catch_all does the same as hug';
+$e = try { my $x = 1 };
+is hug(), 0, 'hug does not catch lack of exception (using default $@)';
+try { throw 100, 'Ohfff' }; # make sure $@ is set
+is hug($e), 0, 'hug does not catch lack of exception';
+is catch_all($e), hug($e), 'catch_all does the same as hug';
 
 # what if the exception code is a string
 eval { ouch('missing_param', 'Email'); };

@@ -33,7 +33,7 @@ sub throw {  # alias
 
 sub kiss {
   my ($code, $e) = @_;
-  $e ||= $@;
+  $e = $@ if @_ < 2;
   if (blessed $e && $e->isa('Ouch') && $e->code eq $code) {
     return 1;
   }
@@ -49,9 +49,8 @@ sub caught {
 }
 
 sub hug {
-  my ($e) = @_;
-  $e ||= $@;
-  return $@ ? 1 : 0;
+  my $e = @_ ? $_[0] : $@;
+  return $e ? 1 : 0;
 }
 
 sub catch_all {
@@ -63,13 +62,12 @@ sub caught_all {
 }
 
 sub bleep {
-  my ($e) = @_;
-  $e ||= $@;
+  my $e = @_ ? $_[0] : $@;
   if (blessed $e && $e->isa('Ouch')) {
     return $e->message;
   }
   else {
-    my $message = $@;
+    my $message = "$e"; # force to string anyway
     if ($message =~ m{^(.*)\s+at\s.*line\s\d+.}xms) {
         return $1;
     }
@@ -80,12 +78,11 @@ sub bleep {
 }
 
 sub barf {
-    my ($e) = @_;
+    my $e = @_ ? $_[0] : $@;
     my $code;
-    $e ||= $@;
     if (blessed $e && $e->isa('Ouch')) {
         $code = $e->code;
-    } 
+    }
     else {
         $code = 1;
     }
