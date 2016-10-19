@@ -8,7 +8,8 @@ my $builder = Module::Build->new(
 	'license' => 'perl',
 	'dist_author' => 'JT Smith',
 	'build_requires' => {
-		'Test::More' => 0
+		'Test::More' => 0,
+		'Test::Trap' => 0,
 	},
 	'create_makefile_pl' => 'traditional'
 );
