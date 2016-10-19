@@ -1,6 +1,6 @@
 Revision history for Perl module Ouch 
 
-0.0409 2016-10-19
+0.0410 2016-10-19
  - Fixed some bugs related to Travis. Thanks to Zshawn Syed.
  - Fix bugs when working with passed exceptions. Thanks to Flavio Poletti.
  - Remove Build.PL. Thanks to Nick Tonkin, andk, Graham Knop, dcollinsn.
